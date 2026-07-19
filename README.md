@@ -141,7 +141,7 @@ git clone https://github.com/nickjv12/newsboard-blog-react.git
 Move into the project directory
 
 ```bash
-cd newsboard
+cd newsboard-blog-react
 ```
 
 Install dependencies
