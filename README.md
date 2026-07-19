@@ -178,6 +178,32 @@ emilyspass
 
 ---
 
+# 📸 Screenshots
+
+## Login Page
+
+![Login Page](screenshots/loginPage.png)
+
+---
+
+## Posts Dashboard
+
+![Post Dashboard](screenshots/postDashboard.png)
+
+---
+
+## Post Details
+
+![Post Details](screenshots/postDetails.png)
+
+---
+
+## Bookmarks
+
+![Bookmarks](screenshots/bookmarks.png)
+
+---
+
 # ✨ Future Improvements
 
 - Dark Mode
@@ -242,7 +268,7 @@ npm run lint
 # 👨‍💻 Author
 
 **Shambhavi Mishra**
-
+Registration Number:20221088
 Electronics and Communication Engineering Student
 
 ---
