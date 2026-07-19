@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { getPosts } from "../../services/postService";
 import PostCard from "../../components/PostCard/PostCard";
 import useDebounce from "../../hooks/useDebounce";
+import Navbar from "../../components/Navbar/Navbar";
 
 function Posts() {
   // Stores all posts received from the API
@@ -18,6 +19,12 @@ function Posts() {
 
   // Sorting order
   const [sortOrder, setSortOrder] = useState("asc");
+ 
+  // Current page
+  const [currentPage, setCurrentPage] = useState(1);
+
+  // Number of posts per page
+  const postsPerPage = 6;
 
   // Debounced search value (500ms delay)
   const debouncedSearch = useDebounce(search, 500);
@@ -41,6 +48,12 @@ function Posts() {
     fetchPosts();
   }, []);
 
+  // Reset page whenever search or sorting changes
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setCurrentPage(1);
+  }, [debouncedSearch, sortOrder]);
+
   // Filter posts based on search
   const filteredPosts = posts.filter((post) =>
     post.title.toLowerCase().includes(debouncedSearch.toLowerCase())
@@ -54,6 +67,19 @@ function Posts() {
 
     return b.title.localeCompare(a.title);
   });
+
+  // Pagination calculations
+  const indexOfLastPost = currentPage * postsPerPage;
+  const indexOfFirstPost = indexOfLastPost - postsPerPage;
+
+  const currentPosts = sortedPosts.slice(
+    indexOfFirstPost,
+    indexOfLastPost
+  );
+
+  const totalPages = Math.ceil(
+    sortedPosts.length / postsPerPage
+  );
 
   // Loading UI
   if (loading) {
@@ -74,6 +100,8 @@ function Posts() {
   }
 
   return (
+    <>
+    <Navbar />
     <div className="max-w-6xl mx-auto p-8">
       <h1 className="text-4xl font-bold mb-8 text-center">
         Latest Posts
@@ -99,14 +127,14 @@ function Posts() {
         </select>
       </div>
 
-      {/* No Posts Found */}
-      {sortedPosts.length === 0 ? (
+       {/* Posts */}
+      {currentPosts.length === 0 ? (
         <div className="text-center text-gray-600">
           No posts found.
         </div>
       ) : (
         <div className="grid gap-6">
-          {sortedPosts.map((post) => (
+          {currentPosts.map((post) => (
             <PostCard
               key={post.id}
               post={post}
@@ -114,7 +142,37 @@ function Posts() {
           ))}
         </div>
       )}
+
+      {/* Pagination */}
+      <div className="flex justify-center items-center gap-4 mt-10">
+        <button
+          onClick={() =>
+            setCurrentPage((prev) => Math.max(prev - 1, 1))
+          }
+          disabled={currentPage === 1}
+          className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
+        >
+          Previous
+        </button>
+
+        <span className="font-semibold">
+          Page {currentPage} of {totalPages}
+        </span>
+
+        <button
+          onClick={() =>
+            setCurrentPage((prev) =>
+              Math.min(prev + 1, totalPages)
+            )
+          }
+          disabled={currentPage === totalPages}
+          className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
+        >
+          Next
+        </button>
+      </div>
     </div>
+    </>
   );
 }
 
